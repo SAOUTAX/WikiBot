@@ -1,5 +1,5 @@
-const { mw } = require(".utils/mediaWiki");
-const api = new mw.Api(require(".utils/config").zh);
+const { mw } = require("./utils/mediaWiki");
+const api = new mw.Api(require("./utils/config").zh);
 
 async function querySearch(srsearch) {
 	try {

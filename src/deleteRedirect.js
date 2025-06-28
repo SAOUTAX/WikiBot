@@ -1,5 +1,5 @@
-const { mw } = require('.utils/mediaWiki.js');
-const config = require('.utils/config.js');
+const { mw } = require('./utils/mediaWiki');
+const config = require('./utils/config');
 
 class deleteRedirect {
     constructor() {
