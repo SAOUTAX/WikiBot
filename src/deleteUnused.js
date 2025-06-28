@@ -13,6 +13,9 @@ class deleteUnused {
             'Category:And',
             'Category:Of',
             'Category:The',
+            'Category:To',
+            'Category:With',
+            'Category:In',
         ];
         
         this.deleteTemplate = '{{即将删除|user=机娘亚衣琴|无使用或不再使用的文件}}';
