@@ -1,0 +1,27 @@
+{
+  "name": "wikibot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SAOUTAX/WikiBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SAOUTAX/WikiBot/issues"
+  },
+  "homepage": "https://github.com/SAOUTAX/WikiBot#readme",
+  "dependencies": {
+    "dotenv": "^17.0.0",
+    "encoding-japanese": "^2.2.0",
+    "jsdom": "^26.1.0",
+    "wikiparser-node": "^1.21.1"
+  }
+}

@@ -1,0 +1,26 @@
+name: 挂删共享站无使用重定向
+on:
+    schedule:
+        - cron: "30 16 * * *" # 1:30(UTC+8)
+    workflow_dispatch:
+jobs:
+    deleteRedirect:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 签出
+              uses: actions/checkout@v4
+            - name: 设置 node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - name: 安装 npm 依赖
+              run: npm install
+            - name: 运行
+              env:
+                  MGP_CM_BOTUSERNAME: ${{ vars.MGP_CM_BOTUSERNAME }}
+                  MGP_CM_BOTPASSWORD: ${{ secrets.MGP_CM_BOTPASSWORD }}
+                  MGP_SSOUSERID: ${{ vars.MGP_SSOUSERID }}
+                  MGP_SSOTOKEN: ${{ secrets.MGP_SSOTOKEN }}
+              run: |
+                  node deleteRedirect

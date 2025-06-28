@@ -1,0 +1,26 @@
+name: 修复Navbox格式排版
+on:
+    schedule:
+        - cron: "30 18 * * *" # 3:30(UTC+8)
+    workflow_dispatch:
+jobs:
+    correctNavFormat:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 签出
+              uses: actions/checkout@v4
+            - name: 设置 node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - name: 安装 npm 依赖
+              run: npm install
+            - name: 运行
+              env:
+                  MGP_ZH_BOTUSERNAME: ${{ vars.MGP_ZH_BOTUSERNAME }}
+                  MGP_ZH_BOTPASSWORD: ${{ secrets.MGP_ZH_BOTPASSWORD }}
+                  MGP_SSOUSERID: ${{ vars.MGP_SSOUSERID }}
+                  MGP_SSOTOKEN: ${{ secrets.MGP_SSOTOKEN }}
+              run: |
+                  node correctNavFormat
