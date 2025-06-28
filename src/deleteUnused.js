@@ -433,8 +433,8 @@ class deleteUnused {
 }
 
 if (require.main === module) {
-    const deleteUnused = new deleteUnused();
-    deleteUnused.run().catch(console.error);
+    const cleaner = new deleteUnused();
+    cleaner.run().catch(console.error);
 }
 
 module.exports = deleteUnused;

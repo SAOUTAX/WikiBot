@@ -265,8 +265,8 @@ class deleteRedirect {
 }
 
 if (require.main === module) {
-    const deleteRedirect = new deleteRedirect();
-    deleteRedirect.run().catch(console.error);
+    const cleaner = new deleteRedirect();
+    cleaner.run().catch(console.error);
 }
 
 module.exports = deleteRedirect;
