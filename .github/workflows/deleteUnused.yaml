@@ -1,7 +1,7 @@
 name: 挂删无使用文件
 on:
     schedule:
-        - cron: "00 15 * * 6" # 23:00(UTC+8)
+        - cron: "00 15 * * *" # 23:00(UTC+8)
     workflow_dispatch:
 jobs:
     deleteUnused:
