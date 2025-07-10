@@ -45,11 +45,27 @@ async function correctNavFormat(pageIds) {
 		return;
 	}
 	
+	if (!result1?.query?.pages) {
+		console.log("无法获取页面内容");
+		return;
+	}
+	
 	const pages = Object.values(result1.query.pages);
 	console.log(`共${pages.length}个页面需要处理`);
 	
 	for (let i = 0; i < pages.length; i++) {
 		const page = pages[i];
+		console.log(`== 第${i + 1}个页面：${page.title} ==`);
+		
+		if (page.missing) {
+			console.log("页面不存在");
+			continue;
+		}
+		
+		if (!page.revisions || !page.revisions[0]) {
+			console.log("无法获取页面内容");
+			continue;
+		}
 		
 		let originalContent = page.revisions[0].content;
 		let modifiedContent = originalContent;
@@ -63,7 +79,7 @@ async function correctNavFormat(pageIds) {
 		);
 		if (modifiedContent !== beforeNavbox) {
 			hasChanges = true;
-			console.log("修正 </noinclude> 和 {{ navbox 之间的格式");
+			console.log("修正了 </noinclude> 和 {{ navbox 之间的格式");
 		}
 		
 		// 修正规则2: </noinclude>\n{{#invoke:Nav|box -> </noinclude>{{#invoke:Nav|box
@@ -74,7 +90,7 @@ async function correctNavFormat(pageIds) {
 		);
 		if (modifiedContent !== beforeInvoke) {
 			hasChanges = true;
-			console.log("修正 </noinclude> 和 {{#invoke:Nav|box 之间的格式");
+			console.log("修正了 </noinclude> 和 {{#invoke:Nav|box 之间的格式");
 		}
 		
 		// 修正规则3: ]]• -> ]] •
@@ -85,7 +101,7 @@ async function correctNavFormat(pageIds) {
 		);
 		if (modifiedContent !== beforeDotAfter) {
 			hasChanges = true;
-			console.log("修正 ]]• 格式");
+			console.log("修正了 ]]• 格式");
 		}
 		
 		// 修正规则4: •[[ -> • [[
@@ -96,7 +112,12 @@ async function correctNavFormat(pageIds) {
 		);
 		if (modifiedContent !== beforeDotBefore) {
 			hasChanges = true;
-			console.log("修正 •[[ 格式");
+			console.log("修正了 •[[ 格式");
+		}
+		
+		if (!hasChanges) {
+			console.log("无需修改");
+			continue;
 		}
 		
 		// 执行编辑
@@ -188,12 +209,16 @@ function splitArray(array, size) {
 		const pageIdBatches = splitArray(pageIds, 500);
 		
 		for (let i = 0; i < pageIdBatches.length; i++) {
-			await correctNavFormat(pageIdBatches[i]);			
+			console.log(`\n=== 开始处理第${i + 1}批页面 (${pageIdBatches[i].length}个页面) ===`);
+			await correctNavFormat(pageIdBatches[i]);
+			console.log(`=== 完成处理第${i + 1}批页面 ===\n`);
+			
 			if (i < pageIdBatches.length - 1) {
 				console.log("等待2秒后处理下一批...");
 				await new Promise(resolve => setTimeout(resolve, 2000));
 			}
-		}		
+		}
+		
 		console.log("所有页面处理完成");
 	} catch (error) {
 		console.error("脚本执行出错:", error);
