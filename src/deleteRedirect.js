@@ -68,7 +68,7 @@ class DeleteRedirect {
         }
     }
 
-    async editPage(title, text, summary, base, start) {
+    async editPage(title, text, base, start) {
         const doEdit = async () => {
             try {
                 const res = await this.api.post({
