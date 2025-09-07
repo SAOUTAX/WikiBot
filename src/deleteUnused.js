@@ -4,19 +4,32 @@ const config = require('./utils/config');
 class DeleteUnused {
     constructor() {
         this.api = new mw.Api(config.cm);
-        this.targetCategories = [
-            'Category:未知',
-            'Category:作者:未知',
-            'Category:作者:',
-            'Category:A',
-            'Category:And',
-            'Category:Of',
-            'Category:The',
-            'Category:To',
-            'Category:With',
-            'Category:In',
-        ];
+        this.zhApi = new mw.Api(config.zh);
+        this.categories = [];
         this.daysBefore = 3;
+    }
+
+    async TargetCategories() {
+        try {
+            const res = await this.zhApi.post({
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
+                titles: 'User:SaoMikoto/Bot/Config/deleteUnused.json'
+            });
+
+            const page = Object.values(res?.query?.pages || {})[0];
+            if (page && !page.missing) {
+                const content = page.revisions?.[0]?.content;
+                if (content) {
+                    const configData = JSON.parse(content);
+                    this.categories = configData.categories || [];
+                }
+            }
+            console.log('目标分类:', this.categories);
+        } catch (err) {
+            console.error('加载目标分类配置失败:', err);
+        }
     }
 
     isFileOldEnough(timestamp) {
@@ -67,7 +80,7 @@ class DeleteUnused {
     async getAllCategoryFiles() {
         const allFiles = [];
         
-        for (const category of this.targetCategories) {
+        for (const category of this.categories) {
             const categoryFiles = await this.getCategoryFiles(category);
             allFiles.push(...categoryFiles);
             await this.sleep(1000);
@@ -242,12 +255,26 @@ class DeleteUnused {
     async run() {
         try {
             await this.api.login();
+            await this.zhApi.login();
+            
+            await this.TargetCategories();
+            
+            if (!this.categories.length) {
+                console.log('无法读取分类配置');
+                return;
+            }
             
             const allFiles = await this.getAllCategoryFiles();
             if (!allFiles.length) return;
 
             const unusedFiles = await this.checkGlobalUsage(allFiles);
-            if (!unusedFiles.length) return;
+            if (unusedFiles.length) {
+                console.log('以下文件无使用：');
+                unusedFiles.forEach(file => console.log(file.title));
+            } else {
+                console.log('未找到符合条件的无使用文件');
+                return;
+            }
 
             let success = 0;
             for (const fileData of unusedFiles) {
@@ -259,6 +286,7 @@ class DeleteUnused {
             console.error('执行出错:', err);
         } finally {
             await this.api.logout().catch(() => {});
+            await this.zhApi.logout().catch(() => {});
         }
     }
 }

@@ -20,6 +20,8 @@ jobs:
               env:
                   MGP_CM_BOTUSERNAME: ${{ vars.MGP_CM_BOTUSERNAME }}
                   MGP_CM_BOTPASSWORD: ${{ secrets.MGP_CM_BOTPASSWORD }}
+                  MGP_ZH_BOTUSERNAME: ${{ vars.MGP_ZH_BOTUSERNAME }}
+                  MGP_ZH_BOTPASSWORD: ${{ secrets.MGP_ZH_BOTPASSWORD }}
                   MGP_SSOUSERID: ${{ vars.MGP_SSOUSERID }}
                   MGP_SSOTOKEN: ${{ secrets.MGP_SSOTOKEN }}
               run: |
